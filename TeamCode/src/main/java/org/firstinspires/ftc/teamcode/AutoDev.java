@@ -3,6 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "AutoDev", group = "DEV")
 public class AutoDev extends LinearOpMode {
@@ -11,12 +16,18 @@ public class AutoDev extends LinearOpMode {
     DcMotor motorRightBack = null;
     DcMotor motorLeftFront = null;
     DcMotor motorLeftBack = null;
+    Rev2mDistanceSensor sensorLeft = null;
+    Rev2mDistanceSensor sensorRight = null;
+    RevColorSensorV3 sensorColour = null;
     @Override
     public void runOpMode() throws InterruptedException {
         motorRightFront = hardwareMap.get(DcMotor.class, "Right Front Motor");
         motorRightBack = hardwareMap.get(DcMotor.class, "Right Back Motor");
         motorLeftFront = hardwareMap.get(DcMotor.class, "Left Front Motor");
         motorLeftBack = hardwareMap.get(DcMotor.class, "Left Back Motor");
+        sensorLeft = hardwareMap.get(Rev2mDistanceSensor.class, "Left Sensor");
+        sensorRight = hardwareMap.get(Rev2mDistanceSensor.class, "Right Sensor");
+        sensorColour = hardwareMap.get(RevColorSensorV3.class, "Colour Sensor");
 
         motorLeftBack.setDirection(DcMotor.Direction.REVERSE);
         motorLeftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -44,6 +55,8 @@ public class AutoDev extends LinearOpMode {
             telemetry.addData("Status", "Running");
             telemetry.update();
 
+            int x = sensorColour.blue();
+
             backstage(Team.BLUE, StartingPosition.BACKSTAGE);
         }
     }
@@ -66,6 +79,18 @@ public class AutoDev extends LinearOpMode {
     }
 
     private void backstage(Team team, StartingPosition position) {
+        move(Direction.LEFT, -1);
+        while(opModeIsActive()) {
+            double distLeft = sensorLeft.getDistance(DistanceUnit.CM);
+            double distRight = sensorRight.getDistance(DistanceUnit.CM);
+
+            if(distLeft < 40) {
+                move(Direction.RIGHT, 50);
+                sleep(1000);
+                move(Direction.FORWARD, 50);
+                break;
+            }
+        }
         move(Direction.FORWARD, 20);
         if(team == Team.BLUE) {
             move(Direction.RIGHT, 100);
@@ -120,10 +145,12 @@ public class AutoDev extends LinearOpMode {
                 break;
             }
         }
-        sleep((long) (centimeters * 1000 / VELOCITY));
-        motorLeftBack.setPower(0);
-        motorLeftFront.setPower(0);
-        motorRightFront.setPower(0);
-        motorRightBack.setPower(0);
+        if(centimeters >= 0) {
+            sleep((long) (centimeters * 1000 / VELOCITY));
+            motorLeftBack.setPower(0);
+            motorLeftFront.setPower(0);
+            motorRightFront.setPower(0);
+            motorRightBack.setPower(0);
+        }
     }
 }
