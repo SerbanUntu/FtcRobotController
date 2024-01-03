@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-@Autonomous(name = "WheelTest", group = "TEST")
-public class WheelTest extends LinearOpMode {
+@Autonomous(name = "AutoDev", group = "DEV")
+public class AutoDev extends LinearOpMode {
+    final double VELOCITY = 62.5;
     DcMotor motorRightFront = null;
     DcMotor motorRightBack = null;
     DcMotor motorLeftFront = null;
@@ -33,9 +33,6 @@ public class WheelTest extends LinearOpMode {
         motorRightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorRightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        Gamepad currentGamepad1 = new Gamepad();
-        Gamepad previousGamepad1 = new Gamepad();
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -46,13 +43,8 @@ public class WheelTest extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Status", "Running");
             telemetry.update();
-            previousGamepad1.copy(currentGamepad1);
-            currentGamepad1.copy(gamepad1);
 
-            move(Direction.FORWARD, 500);
-            move(Direction.LEFT, 500);
-            move(Direction.BACKWARD, 500);
-            move(Direction.RIGHT, 500);
+            backstage(Team.BLUE, StartingPosition.BACKSTAGE);
         }
     }
 
@@ -63,11 +55,37 @@ public class WheelTest extends LinearOpMode {
         RIGHT
     }
 
-    private void move(Direction direction, long milliseconds) {
-        telemetry.addData("Motion", direction);
-        telemetry.update();
+    private enum Team {
+        BLUE,
+        RED
+    }
+
+    private enum StartingPosition {
+        BACKSTAGE,
+        PUBLIC
+    }
+
+    private void backstage(Team team, StartingPosition position) {
+        move(Direction.FORWARD, 20);
+        if(team == Team.BLUE) {
+            move(Direction.RIGHT, 100);
+            if(position == StartingPosition.PUBLIC) {
+                move(Direction.RIGHT, 100);
+            }
+        }
+        if(team == Team.RED) {
+            move(Direction.LEFT, 100);
+            if(position == StartingPosition.PUBLIC) {
+                move(Direction.LEFT, 100);
+            }
+        }
+    }
+
+    private void move(Direction direction, long centimeters) {
         switch (direction) {
             case FORWARD: {
+                telemetry.addData("Status", "Moving forward");
+                telemetry.update();
                 motorLeftBack.setPower(1);
                 motorLeftFront.setPower(1);
                 motorRightFront.setPower(1);
@@ -75,6 +93,8 @@ public class WheelTest extends LinearOpMode {
                 break;
             }
             case BACKWARD: {
+                telemetry.addData("Status", "Moving backward");
+                telemetry.update();
                 motorLeftBack.setPower(-1);
                 motorLeftFront.setPower(-1);
                 motorRightFront.setPower(-1);
@@ -82,6 +102,8 @@ public class WheelTest extends LinearOpMode {
                 break;
             }
             case LEFT: {
+                telemetry.addData("Status", "Moving left");
+                telemetry.update();
                 motorLeftBack.setPower(1);
                 motorLeftFront.setPower(-1);
                 motorRightFront.setPower(1);
@@ -89,6 +111,8 @@ public class WheelTest extends LinearOpMode {
                 break;
             }
             case RIGHT: {
+                telemetry.addData("Status", "Moving right");
+                telemetry.update();
                 motorLeftBack.setPower(-1);
                 motorLeftFront.setPower(1);
                 motorRightFront.setPower(-1);
@@ -96,6 +120,10 @@ public class WheelTest extends LinearOpMode {
                 break;
             }
         }
-        sleep(milliseconds);
+        sleep((long) (centimeters * 1000 / VELOCITY));
+        motorLeftBack.setPower(0);
+        motorLeftFront.setPower(0);
+        motorRightFront.setPower(0);
+        motorRightBack.setPower(0);
     }
 }

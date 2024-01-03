@@ -1,6 +1,7 @@
 ## NOTICE
 
 This repository contains the public FTC SDK for the CENTERSTAGE (2023-2024) competition season.
+
 This is a fork of the [Official FTC Repository](https://github.com/FIRST-Tech-Challenge/FtcRobotController).
 
 ## Welcome!
@@ -15,19 +16,21 @@ To program your robot in Blocks or OnBot Java, you do not need Android Studio.
 
 ## Getting started
 
-- If you are a git user, you can clone the most current version of the repository:
+- If you are a git user, you can clone the most current version of the repository by pasting this command into the terminal from the desired location on your computer:
 
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;git clone https://github.com/SerbanUntu/FtcRobotController.git</p>
+```
+git clone https://github.com/SerbanUntu/FtcRobotController.git
+```
 
 - Alternatively, use the "Download Zip" button available through the main repository page.
 
 Once you have downloaded and uncompressed (if needed) your folder, you can use Android Studio to import the folder  ("Import project (Eclipse ADT, Gradle, etc.)").
 
-The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc/teamcode](TeamCode/src/main/java/org/firstinspires/ftc/teamcode) folder contains the internal documentation to be used by programmers in our team.
+The `readme.md` file located in the [/TeamCode/src/main/java/org/firstinspires/ftc/teamcode](TeamCode/src/main/java/org/firstinspires/ftc/teamcode) folder contains the internal documentation to be used by programmers in our team.
 
 ### OpModes
 
-The sample OpModes are located in the [/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples](FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples) folder.
+The sample OpModes are located in the [/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples](FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples) folder. The `readme.md` file in this folder contains information about sample naming conventions.
 
 The OpModes used by our team can be found in the [/TeamCode/src/main/java/org/firstinspires/ftc/teamcode](TeamCode/src/main/java/org/firstinspires/ftc/teamcode) folder.
 
