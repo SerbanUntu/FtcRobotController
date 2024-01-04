@@ -1,18 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@Autonomous(name = "AutoDev", group = "DEV")
-public class AutoDev extends LinearOpMode {
+@Autonomous(name = "AutoEncodersTest", group = "DEV")
+public class AutoEncodersTest extends LinearOpMode {
 
     // CONSTANTS
     final double PI = 3.14159265359;
     final double WHEEL_DIAMETER_IN_MM = 100;
-    final double TICKS_PER_SEC = 360;
+    final double TICKS_PER_SEC = 360; /* Angular velocity */
     final double INCH_TO_MM = 25.4;
     final double DEGREES_PER_MS = 0.16;
 
@@ -22,7 +22,7 @@ public class AutoDev extends LinearOpMode {
     final double MS_PER_DEGREE = (double) (1.0 / DEGREES_PER_MS);
 
     DcMotorEx motorRightFront = null;
-    DcMotorEx motorRightBack = null;
+    //DcMotorEx motorRightBack = null;
     DcMotorEx motorLeftFront = null;
     DcMotorEx motorLeftBack = null;
     Rev2mDistanceSensor sensorLeft = null;
@@ -31,7 +31,7 @@ public class AutoDev extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         motorRightFront = hardwareMap.get(DcMotorEx.class, "Right Front Motor");
-        motorRightBack = hardwareMap.get(DcMotorEx.class, "Right Back Motor");
+        //motorRightBack = hardwareMap.get(DcMotorEx.class, "Right Back Motor");
         motorLeftFront = hardwareMap.get(DcMotorEx.class, "Left Front Motor");
         motorLeftBack = hardwareMap.get(DcMotorEx.class, "Left Back Motor");
         //sensorLeft = hardwareMap.get(Rev2mDistanceSensor.class, "Left Sensor");
@@ -41,16 +41,16 @@ public class AutoDev extends LinearOpMode {
         motorLeftBack.setDirection(DcMotorEx.Direction.REVERSE);
         motorLeftFront.setDirection(DcMotorEx.Direction.REVERSE);
         motorRightFront.setDirection(DcMotorEx.Direction.FORWARD);
-        motorRightBack.setDirection(DcMotorEx.Direction.FORWARD);
+        //motorRightBack.setDirection(DcMotorEx.Direction.FORWARD);
 
         motorLeftBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         motorLeftFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         motorRightFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorRightBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        //motorRightBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         motorLeftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorLeftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorRightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        //motorRightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorRightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         telemetry.addData("Status", "Initialized");
@@ -82,44 +82,48 @@ public class AutoDev extends LinearOpMode {
 
             */
 
-            move(Direction.FORWARD, 1000);
+            motorRightFront.setVelocity(100);
+            motorLeftFront.setVelocity(100);
+            motorLeftBack.setVelocity(100);
             sleep(1000);
-            move(Direction.BACKWARD, 1000);
+            motorRightFront.setVelocity(200);
+            motorLeftFront.setVelocity(200);
+            motorLeftBack.setVelocity(200);
             sleep(1000);
-            move(Direction.LEFT, 1000);
+            motorRightFront.setVelocity(300);
+            motorLeftFront.setVelocity(300);
+            motorLeftBack.setVelocity(300);
             sleep(1000);
-            move(Direction.RIGHT, 1000);
-            sleep(1000);
-            rotate(Rotation.CLOCKWISE, 360);
-            sleep(1000);
-            rotate(Rotation.COUNTERCLOCKWISE, 360);
+            motorRightFront.setVelocity(0);
+            motorLeftFront.setVelocity(0);
+            motorLeftBack.setVelocity(0);
             sleep(1000);
         }
     }
 
-    public enum Direction {
+    private enum Direction {
         FORWARD,
         BACKWARD,
         LEFT,
         RIGHT
     }
 
-    public enum Rotation {
+    private enum Rotation {
         CLOCKWISE,
         COUNTERCLOCKWISE
     }
 
-    public enum Team {
+    private enum Team {
         BLUE,
         RED
     }
 
-    public enum StartingPosition {
+    private enum StartingPosition {
         BACKSTAGE,
         PUBLIC
     }
 
-    public void backstage(Team team, StartingPosition position) {
+    private void backstage(Team team, StartingPosition position) {
         move(Direction.FORWARD, 24 /* INCHES */ * INCH_TO_MM);
         if(team == Team.BLUE) {
             move(Direction.LEFT, 48 /* INCHES */ * INCH_TO_MM);
@@ -135,75 +139,77 @@ public class AutoDev extends LinearOpMode {
         }
     }
 
-    public void move(Direction direction, double millimeters) {
+    private void move(Direction direction, double millimeters) {
         switch (direction) {
             case FORWARD: {
                 telemetry.addData("Status", "Moving forward");
                 telemetry.update();
-                motorLeftBack.setVelocity(TICKS_PER_SEC); // 314 mm per second
-                motorLeftFront.setVelocity(TICKS_PER_SEC);
+                //motorLeftBack.setVelocity(TICKS_PER_SEC);
+                //motorLeftFront.setVelocity(TICKS_PER_SEC);
                 motorRightFront.setVelocity(TICKS_PER_SEC);
-                motorRightBack.setVelocity(TICKS_PER_SEC);
+                //motorRightBack.setVelocity(TICKS_PER_SEC);
                 break;
             }
             case BACKWARD: {
                 telemetry.addData("Status", "Moving backward");
                 telemetry.update();
-                motorLeftBack.setVelocity(-TICKS_PER_SEC);
-                motorLeftFront.setVelocity(-TICKS_PER_SEC);
+                //motorLeftBack.setVelocity(-TICKS_PER_SEC);
+                //motorLeftFront.setVelocity(-TICKS_PER_SEC);
                 motorRightFront.setVelocity(-TICKS_PER_SEC);
-                motorRightBack.setVelocity(-TICKS_PER_SEC);
+                //motorRightBack.setVelocity(-TICKS_PER_SEC);
                 break;
             }
             case LEFT: {
                 telemetry.addData("Status", "Moving left");
                 telemetry.update();
-                motorLeftBack.setVelocity(TICKS_PER_SEC);
-                motorLeftFront.setVelocity(-TICKS_PER_SEC);
+                //motorLeftBack.setVelocity(TICKS_PER_SEC);
+                //motorLeftFront.setVelocity(-TICKS_PER_SEC);
                 motorRightFront.setVelocity(TICKS_PER_SEC);
-                motorRightBack.setVelocity(-TICKS_PER_SEC);
+                //motorRightBack.setVelocity(-TICKS_PER_SEC);
                 break;
             }
             case RIGHT: {
                 telemetry.addData("Status", "Moving right");
                 telemetry.update();
-                motorLeftBack.setVelocity(-TICKS_PER_SEC);
-                motorLeftFront.setVelocity(TICKS_PER_SEC);
+                //motorLeftBack.setVelocity(-TICKS_PER_SEC);
+                //motorLeftFront.setVelocity(TICKS_PER_SEC);
                 motorRightFront.setVelocity(-TICKS_PER_SEC);
-                motorRightBack.setVelocity(TICKS_PER_SEC);
+                //motorRightBack.setVelocity(TICKS_PER_SEC);
                 break;
             }
         }
         if(millimeters >= 0) {
             sleep((long) (millimeters * MS_PER_MM));
         }
-        motorLeftBack.setVelocity(0);
-        motorLeftFront.setVelocity(0);
+        //motorLeftBack.setVelocity(0);
+        //motorLeftFront.setVelocity(0);
         motorRightFront.setVelocity(0);
-        motorRightBack.setVelocity(0);
+        //motorRightBack.setVelocity(0);
+        sleep(100);
     }
 
-    public void rotate(Rotation rotation, double degrees) {
+    private void rotate(Rotation rotation, double degrees) {
         switch (rotation) {
             case CLOCKWISE: {
                 telemetry.addData("Rotation", "Clockwise");
                 telemetry.update();
-                motorLeftBack.setVelocity(TICKS_PER_SEC);
-                motorLeftFront.setVelocity(TICKS_PER_SEC);
+                //motorLeftBack.setVelocity(TICKS_PER_SEC);
+                //motorLeftFront.setVelocity(TICKS_PER_SEC);
                 motorRightFront.setVelocity(-TICKS_PER_SEC);
-                motorRightBack.setVelocity(-TICKS_PER_SEC);
+                //motorRightBack.setVelocity(-TICKS_PER_SEC);
                 break;
             }
             case COUNTERCLOCKWISE: {
                 telemetry.addData("Rotation", "Clockwise");
                 telemetry.update();
-                motorLeftBack.setVelocity(-TICKS_PER_SEC);
-                motorLeftFront.setVelocity(-TICKS_PER_SEC);
+                //motorLeftBack.setVelocity(-TICKS_PER_SEC);
+                //motorLeftFront.setVelocity(-TICKS_PER_SEC);
                 motorRightFront.setVelocity(TICKS_PER_SEC);
-                motorRightBack.setVelocity(TICKS_PER_SEC);
+                //motorRightBack.setVelocity(TICKS_PER_SEC);
                 break;
             }
         }
         sleep((long) (degrees * MS_PER_DEGREE));
     }
+
 }

@@ -54,6 +54,32 @@ public class TeleopDev extends LinearOpMode {
             currentGamepad1.copy(gamepad1);
             currentGamepad2.copy(gamepad2);
 
+            double max;
+
+            double axial   = -currentGamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral =  currentGamepad1.left_stick_x;
+            double yaw     =  currentGamepad1.right_stick_x;
+
+            double leftFrontPower  = axial + lateral + yaw;
+            double rightFrontPower = axial - lateral - yaw;
+            double leftBackPower   = axial - lateral + yaw;
+            double rightBackPower  = axial + lateral - yaw;
+
+            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
+
+            if (max > 1.0) {
+                leftFrontPower  /= max;
+                rightFrontPower /= max;
+                leftBackPower   /= max;
+                rightBackPower  /= max;
+            }
+
+            motorLeftFront.setPower(leftFrontPower);
+            motorRightFront.setPower(rightFrontPower);
+            motorLeftBack.setPower(leftBackPower);
+            motorRightBack.setPower(rightBackPower);
         }
     }
 }
