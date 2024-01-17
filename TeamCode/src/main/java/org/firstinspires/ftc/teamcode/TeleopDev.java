@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "TeleopDev", group = "DEV")
 public class TeleopDev extends LinearOpMode {
@@ -12,17 +13,23 @@ public class TeleopDev extends LinearOpMode {
     DcMotor motorRightBack = null;
     DcMotor motorLeftFront = null;
     DcMotor motorLeftBack = null;
+    CRServo servoArmBase = null;
+    Servo servoArmTop = null;
     @Override
     public void runOpMode() throws InterruptedException {
         motorRightFront = hardwareMap.get(DcMotor.class, "Right Front Motor");
         motorRightBack = hardwareMap.get(DcMotor.class, "Right Back Motor");
         motorLeftFront = hardwareMap.get(DcMotor.class, "Left Front Motor");
         motorLeftBack = hardwareMap.get(DcMotor.class, "Left Back Motor");
+        servoArmBase = hardwareMap.get(CRServo.class, "Arm Base Servo");
+        servoArmTop = hardwareMap.get(Servo.class, "Arm Top Servo");
 
         motorLeftBack.setDirection(DcMotor.Direction.REVERSE);
         motorLeftFront.setDirection(DcMotor.Direction.REVERSE);
         motorRightFront.setDirection(DcMotor.Direction.FORWARD);
         motorRightBack.setDirection(DcMotor.Direction.FORWARD);
+        servoArmBase.setDirection(CRServo.Direction.REVERSE);
+        servoArmTop.setDirection(Servo.Direction.REVERSE);
 
         motorLeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorLeftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -54,6 +61,8 @@ public class TeleopDev extends LinearOpMode {
             currentGamepad1.copy(gamepad1);
             currentGamepad2.copy(gamepad2);
 
+            // NAVIGATION Controller
+
             double max;
 
             double axial   = -currentGamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
@@ -69,6 +78,7 @@ public class TeleopDev extends LinearOpMode {
             max = Math.max(max, Math.abs(leftBackPower));
             max = Math.max(max, Math.abs(rightBackPower));
 
+            // Normalization of values
             if (max > 1.0) {
                 leftFrontPower  /= max;
                 rightFrontPower /= max;
@@ -80,6 +90,14 @@ public class TeleopDev extends LinearOpMode {
             motorRightFront.setPower(rightFrontPower);
             motorLeftBack.setPower(leftBackPower);
             motorRightBack.setPower(rightBackPower);
+
+            // SERVO Controller
+
+            double servoArmBaseAxial = -currentGamepad2.left_stick_y;
+            double servoArmTopAxial  = -currentGamepad2.right_stick_y;
+
+            servoArmBase.setPower(servoArmBaseAxial);
+            servoArmTop.setPosition(servoArmTopAxial);
         }
     }
 }
