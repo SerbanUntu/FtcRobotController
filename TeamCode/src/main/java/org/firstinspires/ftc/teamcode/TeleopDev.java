@@ -14,7 +14,8 @@ public class TeleopDev extends LinearOpMode {
     DcMotor motorLeftFront = null;
     DcMotor motorLeftBack = null;
     CRServo servoArmBase = null;
-    Servo servoArmTop = null;
+    CRServo servoArmTop = null;
+    CRServo servoIntake = null;
     @Override
     public void runOpMode() throws InterruptedException {
         motorRightFront = hardwareMap.get(DcMotor.class, "Right Front Motor");
@@ -22,24 +23,26 @@ public class TeleopDev extends LinearOpMode {
         motorLeftFront = hardwareMap.get(DcMotor.class, "Left Front Motor");
         motorLeftBack = hardwareMap.get(DcMotor.class, "Left Back Motor");
         servoArmBase = hardwareMap.get(CRServo.class, "Arm Base Servo");
-        servoArmTop = hardwareMap.get(Servo.class, "Arm Top Servo");
+        servoArmTop = hardwareMap.get(CRServo.class, "Arm Top Servo");
+        servoIntake = hardwareMap.get(CRServo.class, "Intake Servo");
 
         motorLeftBack.setDirection(DcMotor.Direction.REVERSE);
         motorLeftFront.setDirection(DcMotor.Direction.REVERSE);
         motorRightFront.setDirection(DcMotor.Direction.FORWARD);
         motorRightBack.setDirection(DcMotor.Direction.FORWARD);
         servoArmBase.setDirection(CRServo.Direction.REVERSE);
-        servoArmTop.setDirection(Servo.Direction.REVERSE);
+        servoArmTop.setDirection(CRServo.Direction.REVERSE);
+        servoIntake.setDirection(CRServo.Direction.REVERSE);
 
         motorLeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorLeftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorRightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorRightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        motorLeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorLeftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorRightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorRightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorLeftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorRightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorRightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         Gamepad currentGamepad1 = new Gamepad();
         Gamepad currentGamepad2 = new Gamepad();
@@ -62,6 +65,8 @@ public class TeleopDev extends LinearOpMode {
             currentGamepad2.copy(gamepad2);
 
             // NAVIGATION Controller
+
+            /*
 
             double max;
 
@@ -91,13 +96,75 @@ public class TeleopDev extends LinearOpMode {
             motorLeftBack.setPower(leftBackPower);
             motorRightBack.setPower(rightBackPower);
 
+             */
+
             // SERVO Controller
 
-            double servoArmBaseAxial = -currentGamepad2.left_stick_y;
-            double servoArmTopAxial  = -currentGamepad2.right_stick_y;
+            /*
+
+            double servoArmBaseAxial = -currentGamepad1.left_stick_y;
+            double servoArmTopAxial  = -currentGamepad1.right_stick_y;
+
+            if(currentGamepad1.a) {
+                servoIntake.setPower(1);
+            } else if (currentGamepad1.b) {
+                servoIntake.setPower(-1);
+            } else {
+                servoIntake.setPower(0);
+            }
 
             servoArmBase.setPower(servoArmBaseAxial);
-            servoArmTop.setPosition(servoArmTopAxial);
+            servoArmTop.setPower(servoArmTopAxial);
+
+             */
+
+            // UNIFIED Controller
+
+            double max;
+
+            double axial   = -currentGamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral =  currentGamepad1.left_stick_x;
+            double yaw     =  currentGamepad1.right_stick_x;
+
+            double leftFrontPower  = axial + lateral + yaw;
+            double rightFrontPower = axial - lateral - yaw;
+            double leftBackPower   = axial - lateral + yaw;
+            double rightBackPower  = axial + lateral - yaw;
+
+            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
+
+            // Normalization of values
+            if (max > 1.0) {
+                leftFrontPower  /= max;
+                rightFrontPower /= max;
+                leftBackPower   /= max;
+                rightBackPower  /= max;
+            }
+
+            motorLeftFront.setPower(leftFrontPower);
+            motorRightFront.setPower(rightFrontPower);
+            motorLeftBack.setPower(leftBackPower);
+            motorRightBack.setPower(rightBackPower);
+
+            if(currentGamepad1.a) {
+                servoIntake.setPower(1);
+            } else if (currentGamepad1.b) {
+                servoIntake.setPower(-1);
+            } else {
+                servoIntake.setPower(0);
+            }
+
+            if(currentGamepad1.left_bumper) {
+                servoArmTop.setPower(0.7);
+            } else if (currentGamepad1.right_bumper) {
+                servoArmTop.setPower(-0.45);
+            } else {
+                servoArmTop.setPower(0.07);
+            }
+
+            servoArmBase.setPower(currentGamepad1.left_trigger - currentGamepad1.right_trigger);
         }
     }
 }

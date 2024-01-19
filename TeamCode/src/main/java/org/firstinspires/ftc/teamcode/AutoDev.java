@@ -70,6 +70,10 @@ public class AutoDev extends LinearOpMode {
         telemetry.update();
 
         initialize(Team.RED, StartingLocation.PUBLIC, Randomization.A);
+        motorLeftBack.setPower(0);
+        motorLeftFront.setPower(0);
+        motorRightFront.setPower(0);
+        motorRightBack.setPower(0);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -80,7 +84,11 @@ public class AutoDev extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetry.addData("Status", "Running");
+            telemetry.addData("Left Front Motor Position", motorLeftFront.getCurrentPosition());
             telemetry.update();
+
+            move(Direction.FORWARD, 1000);
+            rotate(Rotation.CLOCKWISE, 360);
         }
     }
 
@@ -289,10 +297,10 @@ public class AutoDev extends LinearOpMode {
         if(millimeters >= 0) {
             sleep((long) (millimeters * MS_PER_MM));
         }
-        motorLeftBack.setVelocity(0);
-        motorLeftFront.setVelocity(0);
-        motorRightFront.setVelocity(0);
-        motorRightBack.setVelocity(0);
+        motorLeftBack.setPower(0);
+        motorLeftFront.setPower(0);
+        motorRightFront.setPower(0);
+        motorRightBack.setPower(0);
     }
 
     public void rotate(Rotation rotation, double degrees) {
@@ -319,9 +327,9 @@ public class AutoDev extends LinearOpMode {
         if(degrees >= 0) {
             sleep((long) (degrees * MS_PER_DEGREE));
         }
-        motorLeftBack.setVelocity(0);
-        motorLeftFront.setVelocity(0);
-        motorRightFront.setVelocity(0);
-        motorRightBack.setVelocity(0);
+        motorLeftBack.setPower(0);
+        motorLeftFront.setPower(0);
+        motorRightFront.setPower(0);
+        motorRightBack.setPower(0);
     }
 }
