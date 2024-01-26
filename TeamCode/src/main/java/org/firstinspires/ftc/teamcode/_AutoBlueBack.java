@@ -8,9 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "Auto")
-@Disabled
-public class Auto extends LinearOpMode {
+@Autonomous(name = "_AutoBlueBack")
+public class _AutoBlueBack extends LinearOpMode {
 
     DcMotor motorRightFront = null;
     DcMotor motorLeftFront = null;
@@ -19,8 +18,6 @@ public class Auto extends LinearOpMode {
     Rev2mDistanceSensor sensorLeft = null;
     Rev2mDistanceSensor sensorRight = null;
     RevColorSensorV3 sensorColour = null;
-
-    StartingLocation currentStartingLocation = StartingLocation.BACKSTAGE;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -29,8 +26,8 @@ public class Auto extends LinearOpMode {
         motorLeftBack = hardwareMap.get(DcMotor.class, "Left Back Motor");
         motorRightBack = hardwareMap.get(DcMotor.class, "Right Back Motor");
 
-        motorRightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorRightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorLeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorLeftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motorLeftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorRightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -45,12 +42,8 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Status", "Running");
             telemetry.update();
 
-            if(currentStartingLocation == StartingLocation.BACKSTAGE) {
-                move(Direction.FORWARD, 1500);
-            }
-            else {
-                move(Direction.LEFT, 500);
-            }
+            move(Direction.FORWARD, 1500, 1);
+            sleep(30000);
         }
     }
     public enum Direction {
@@ -75,42 +68,42 @@ public class Auto extends LinearOpMode {
         PUBLIC
     }
 
-    public void move(Direction direction, long milliseconds) {
+    public void move(Direction direction, long milliseconds, double power) {
         switch (direction) {
             case FORWARD: {
                 telemetry.addData("Moving", "Forward");
                 telemetry.update();
-                motorLeftBack.setPower(1);
-                motorLeftFront.setPower(1);
-                motorRightFront.setPower(1);
-                motorRightBack.setPower(1);
+                motorLeftBack.setPower(power);
+                motorLeftFront.setPower(power);
+                motorRightFront.setPower(power);
+                motorRightBack.setPower(power);
                 break;
             }
             case BACKWARD: {
                 telemetry.addData("Moving", "Backward");
                 telemetry.update();
-                motorLeftBack.setPower(-1);
-                motorLeftFront.setPower(-1);
-                motorRightFront.setPower(-1);
-                motorRightBack.setPower(-1);
+                motorLeftBack.setPower(-power);
+                motorLeftFront.setPower(-power);
+                motorRightFront.setPower(-power);
+                motorRightBack.setPower(-power);
                 break;
             }
             case LEFT: {
                 telemetry.addData("Moving", "Left");
                 telemetry.update();
-                motorLeftBack.setPower(1);
-                motorLeftFront.setPower(-1);
-                motorRightFront.setPower(1);
-                motorRightBack.setPower(-1);
+                motorLeftBack.setPower(power);
+                motorLeftFront.setPower(-power);
+                motorRightFront.setPower(power);
+                motorRightBack.setPower(-power);
                 break;
             }
             case RIGHT: {
                 telemetry.addData("Moving", "Right");
                 telemetry.update();
-                motorLeftBack.setPower(-1);
-                motorLeftFront.setPower(1);
-                motorRightFront.setPower(-1);
-                motorRightBack.setPower(1);
+                motorLeftBack.setPower(-power);
+                motorLeftFront.setPower(power);
+                motorRightFront.setPower(-power);
+                motorRightBack.setPower(power);
                 break;
             }
         }
@@ -121,24 +114,24 @@ public class Auto extends LinearOpMode {
         motorRightBack.setPower(0);
     }
 
-    public void rotate(Rotation rotation, long milliseconds) {
+    public void rotate(Rotation rotation, long milliseconds, double power) {
         switch (rotation) {
             case CLOCKWISE: {
                 telemetry.addData("Rotating", "Clockwise");
                 telemetry.update();
-                motorLeftBack.setPower(1);
-                motorLeftFront.setPower(1);
-                motorRightFront.setPower(-1);
-                motorRightBack.setPower(-1);
+                motorLeftBack.setPower(power);
+                motorLeftFront.setPower(power);
+                motorRightFront.setPower(-power);
+                motorRightBack.setPower(-power);
                 break;
             }
             case COUNTERCLOCKWISE: {
                 telemetry.addData("Rotating", "Counterclockwise");
                 telemetry.update();
-                motorLeftBack.setPower(-1);
-                motorLeftFront.setPower(-1);
-                motorRightFront.setPower(1);
-                motorRightBack.setPower(1);
+                motorLeftBack.setPower(-power);
+                motorLeftFront.setPower(-power);
+                motorRightFront.setPower(power);
+                motorRightBack.setPower(power);
                 break;
             }
         }
