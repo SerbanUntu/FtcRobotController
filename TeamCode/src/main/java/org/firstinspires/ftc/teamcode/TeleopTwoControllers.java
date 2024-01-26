@@ -1,16 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "TeleopDev", group = "DEV")
-@Disabled
-public class TeleopDev extends LinearOpMode {
+@TeleOp(name = "TeleopTwoControllers", group = "PROD")
+public class TeleopTwoControllers extends LinearOpMode {
     DcMotor motorRightFront = null;
     DcMotor motorRightBack = null;
     DcMotor motorLeftFront = null;
@@ -68,8 +65,6 @@ public class TeleopDev extends LinearOpMode {
 
             // NAVIGATION Controller
 
-            /*
-
             double max;
 
             double axial   = -currentGamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
@@ -98,29 +93,15 @@ public class TeleopDev extends LinearOpMode {
             motorLeftBack.setPower(leftBackPower);
             motorRightBack.setPower(rightBackPower);
 
-             */
-
             // SERVO Controller
 
-            /*
-
-            double servoArmBaseAxial = -currentGamepad1.left_stick_y;
-            double servoArmTopAxial  = -currentGamepad1.right_stick_y;
-
-            if(currentGamepad1.a) {
-                servoIntake.setPower(1);
-            } else if (currentGamepad1.b) {
-                servoIntake.setPower(-1);
-            } else {
-                servoIntake.setPower(0);
-            }
-
-            servoArmBase.setPower(servoArmBaseAxial);
-            servoArmTop.setPower(servoArmTopAxial);
-
-             */
+            servoArmBase.setPower(-currentGamepad2.left_stick_y);
+            servoArmTop.setPower(-currentGamepad2.right_stick_y * 0.6);
+            servoIntake.setPower(currentGamepad2.left_trigger - currentGamepad2.right_trigger);
 
             // UNIFIED Controller
+
+            /*
 
             double max;
 
@@ -159,14 +140,16 @@ public class TeleopDev extends LinearOpMode {
             }
 
             if(currentGamepad1.left_bumper) {
-                servoArmTop.setPower(0.7);
+                servoArmTop.setPower(0.70);
             } else if (currentGamepad1.right_bumper) {
-                servoArmTop.setPower(-0.45);
+                servoArmTop.setPower(-0.40);
             } else {
                 servoArmTop.setPower(0.07);
             }
 
             servoArmBase.setPower(currentGamepad1.left_trigger - currentGamepad1.right_trigger);
+
+             */
         }
     }
 }

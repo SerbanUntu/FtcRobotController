@@ -1,25 +1,24 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@Autonomous(name = "AutoDev", group = "DEV")
+@Autonomous(name = "AutoNoEncodersDev", group = "DEV")
 @Disabled
-public class AutoDev extends LinearOpMode {
+public class AutoNoEncodersDev extends LinearOpMode {
 
     // CONSTANTS
-    final double PI = 3.14159265359;
-    final double WHEEL_DIAMETER_IN_MM = 100;
-    final double TICKS_PER_SEC = 360; // Number of wheel rotations per second * 360
+    final double MM_PER_MS = 2;
     final double INCH_TO_MM = 25.4;
     final double DEGREES_PER_MS = 0.16;
 
     // DERIVED CONSTANTS
-    final double MM_PER_MS = TICKS_PER_SEC / 360_000.0 * WHEEL_DIAMETER_IN_MM * PI;
+
     final double MS_PER_MM = 1.0 / MM_PER_MS;
     final double MS_PER_DEGREE = 1.0 / DEGREES_PER_MS;
 
@@ -30,10 +29,10 @@ public class AutoDev extends LinearOpMode {
     final Position startBluePublic = new Position(9 * INCH_TO_MM, 24 * 4.5 * INCH_TO_MM);
     final Position startRedBackstage = new Position((22.75 * 6 - 9) * INCH_TO_MM, 24 * 2.5 * INCH_TO_MM);
     final Position startRedPublic = new Position((22.75 * 6 - 9) * INCH_TO_MM, 24 * 4.5 * INCH_TO_MM);
-    DcMotorEx motorRightFront = null;
-    DcMotorEx motorRightBack = null;
-    DcMotorEx motorLeftFront = null;
-    DcMotorEx motorLeftBack = null;
+    DcMotor motorRightFront = null;
+    DcMotor motorRightBack = null;
+    DcMotor motorLeftFront = null;
+    DcMotor motorLeftBack = null;
     Rev2mDistanceSensor sensorLeft = null;
     Rev2mDistanceSensor sensorRight = null;
     RevColorSensorV3 sensorColour = null;
@@ -43,30 +42,30 @@ public class AutoDev extends LinearOpMode {
     StartingLocation currentStartingLocation = null;
     @Override
     public void runOpMode() throws InterruptedException {
-        motorRightFront = hardwareMap.get(DcMotorEx.class, "Right Front Motor");
-        motorRightBack = hardwareMap.get(DcMotorEx.class, "Right Back Motor");
-        motorLeftFront = hardwareMap.get(DcMotorEx.class, "Left Front Motor");
-        motorLeftBack = hardwareMap.get(DcMotorEx.class, "Left Back Motor");
+        motorRightFront = hardwareMap.get(DcMotor.class, "Right Front Motor");
+        motorRightBack = hardwareMap.get(DcMotor.class, "Right Back Motor");
+        motorLeftFront = hardwareMap.get(DcMotor.class, "Left Front Motor");
+        motorLeftBack = hardwareMap.get(DcMotor.class, "Left Back Motor");
         // servoArmBase = hardwareMap.get(CRServo.class, "Arm Base Servo");
         // servoArmTop = hardwareMap.get(Servo.class, "Arm Top Servo");
         // sensorLeft = hardwareMap.get(Rev2mDistanceSensor.class, "Left Sensor");
         // sensorRight = hardwareMap.get(Rev2mDistanceSensor.class, "Right Sensor");
         // sensorColour = hardwareMap.get(RevColorSensorV3.class, "Colour Sensor");
 
-        motorLeftBack.setDirection(DcMotorEx.Direction.REVERSE);
-        motorLeftFront.setDirection(DcMotorEx.Direction.REVERSE);
-        motorRightFront.setDirection(DcMotorEx.Direction.FORWARD);
-        motorRightBack.setDirection(DcMotorEx.Direction.FORWARD);
+        motorLeftBack.setDirection(DcMotor.Direction.REVERSE);
+        motorLeftFront.setDirection(DcMotor.Direction.REVERSE);
+        motorRightFront.setDirection(DcMotor.Direction.FORWARD);
+        motorRightBack.setDirection(DcMotor.Direction.FORWARD);
 
-        motorLeftBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorLeftFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorRightFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorRightBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        motorLeftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorLeftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorRightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorRightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        motorLeftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorLeftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorRightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        motorRightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        motorLeftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLeftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorRightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorRightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
@@ -89,8 +88,8 @@ public class AutoDev extends LinearOpMode {
             telemetry.addData("Left Front Motor Position", motorLeftFront.getCurrentPosition());
             telemetry.update();
 
-            move(Direction.FORWARD, 1000);
-            rotate(Rotation.CLOCKWISE, 360);
+            moveToBackstage();
+            sleep(30000);
         }
     }
 
@@ -262,37 +261,37 @@ public class AutoDev extends LinearOpMode {
             case FORWARD: {
                 telemetry.addData("Moving", "Forward");
                 telemetry.update();
-                motorLeftBack.setVelocity(TICKS_PER_SEC);
-                motorLeftFront.setVelocity(TICKS_PER_SEC);
-                motorRightFront.setVelocity(TICKS_PER_SEC);
-                motorRightBack.setVelocity(TICKS_PER_SEC);
+                motorLeftBack.setPower(1);
+                motorLeftFront.setPower(1);
+                motorRightFront.setPower(1);
+                motorRightBack.setPower(1);
                 break;
             }
             case BACKWARD: {
                 telemetry.addData("Moving", "Backward");
                 telemetry.update();
-                motorLeftBack.setVelocity(-TICKS_PER_SEC);
-                motorLeftFront.setVelocity(-TICKS_PER_SEC);
-                motorRightFront.setVelocity(-TICKS_PER_SEC);
-                motorRightBack.setVelocity(-TICKS_PER_SEC);
+                motorLeftBack.setPower(-1);
+                motorLeftFront.setPower(-1);
+                motorRightFront.setPower(-1);
+                motorRightBack.setPower(-1);
                 break;
             }
             case LEFT: {
                 telemetry.addData("Moving", "Left");
                 telemetry.update();
-                motorLeftBack.setVelocity(TICKS_PER_SEC);
-                motorLeftFront.setVelocity(-TICKS_PER_SEC);
-                motorRightFront.setVelocity(TICKS_PER_SEC);
-                motorRightBack.setVelocity(-TICKS_PER_SEC);
+                motorLeftBack.setPower(1);
+                motorLeftFront.setPower(-1);
+                motorRightFront.setPower(1);
+                motorRightBack.setPower(-1);
                 break;
             }
             case RIGHT: {
                 telemetry.addData("Moving", "Right");
                 telemetry.update();
-                motorLeftBack.setVelocity(-TICKS_PER_SEC);
-                motorLeftFront.setVelocity(TICKS_PER_SEC);
-                motorRightFront.setVelocity(-TICKS_PER_SEC);
-                motorRightBack.setVelocity(TICKS_PER_SEC);
+                motorLeftBack.setPower(-1);
+                motorLeftFront.setPower(1);
+                motorRightFront.setPower(-1);
+                motorRightBack.setPower(1);
                 break;
             }
         }
@@ -310,19 +309,19 @@ public class AutoDev extends LinearOpMode {
             case CLOCKWISE: {
                 telemetry.addData("Rotating", "Clockwise");
                 telemetry.update();
-                motorLeftBack.setVelocity(TICKS_PER_SEC);
-                motorLeftFront.setVelocity(TICKS_PER_SEC);
-                motorRightFront.setVelocity(-TICKS_PER_SEC);
-                motorRightBack.setVelocity(-TICKS_PER_SEC);
+                motorLeftBack.setPower(1);
+                motorLeftFront.setPower(1);
+                motorRightFront.setPower(-1);
+                motorRightBack.setPower(-1);
                 break;
             }
             case COUNTERCLOCKWISE: {
                 telemetry.addData("Rotating", "Counterclockwise");
                 telemetry.update();
-                motorLeftBack.setVelocity(-TICKS_PER_SEC);
-                motorLeftFront.setVelocity(-TICKS_PER_SEC);
-                motorRightFront.setVelocity(TICKS_PER_SEC);
-                motorRightBack.setVelocity(TICKS_PER_SEC);
+                motorLeftBack.setPower(-1);
+                motorLeftFront.setPower(-1);
+                motorRightFront.setPower(1);
+                motorRightBack.setPower(1);
                 break;
             }
         }

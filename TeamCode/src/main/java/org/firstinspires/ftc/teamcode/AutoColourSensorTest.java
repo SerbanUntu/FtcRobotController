@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name = "AutoColourSensorTest", group = "TEST")
+@Disabled
 public class AutoColourSensorTest extends LinearOpMode {
     RevColorSensorV3 sensorColour = null;
     @Override

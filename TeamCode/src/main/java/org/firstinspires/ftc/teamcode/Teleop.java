@@ -1,16 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "TeleopDev", group = "DEV")
-@Disabled
-public class TeleopDev extends LinearOpMode {
+@TeleOp(name = "Teleop", group = "PROD")
+public class Teleop extends LinearOpMode {
     DcMotor motorRightFront = null;
     DcMotor motorRightBack = null;
     DcMotor motorLeftFront = null;
@@ -159,9 +156,9 @@ public class TeleopDev extends LinearOpMode {
             }
 
             if(currentGamepad1.left_bumper) {
-                servoArmTop.setPower(0.7);
+                servoArmTop.setPower(0.70);
             } else if (currentGamepad1.right_bumper) {
-                servoArmTop.setPower(-0.45);
+                servoArmTop.setPower(-0.40);
             } else {
                 servoArmTop.setPower(0.07);
             }
